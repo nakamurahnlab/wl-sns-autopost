@@ -3,10 +3,11 @@
 """
 WARDROBE LAB -> Threads 自動投稿
 
-毎日1回実行し、
-  1. RSS(/blogs/news.atom) に未投稿の新着があればそれを投稿
-  2. なければ過去記事(sitemap から取得)のうち一番前に投稿したものを再投稿
-する。
+2つのモードで動く（1日あたり各1本まで）。
+  --mode new      新着記事（公開から36時間以内・未投稿）を1本投稿。なければ何もしない。
+                  平日18:00公開／休日10:00公開に合わせ、毎日10:30と18:30に実行する。
+                  その日すでに新着を投稿していたら何もしない（祝日も自動で対応できる）。
+  --mode backfill まだThreadsに出していない過去記事を古い順に1本投稿。全部出し終えたら何もしない。
 
 GitHub Actions で動かす前提。
   - THREADS_USER_ID / THREADS_ACCESS_TOKEN はリポジトリの Secrets から環境変数で渡す
@@ -51,8 +52,8 @@ CATEGORIES = [
       "coat-knit-yearend", "knit-one-year",
       "衣替え", "毛玉", "静電気", "洗い方", "棚卸", "収納"]),
     ("beauty", "メンズ美容", ["#メンズ美容", "#香水"],
-     ["fragrance", "skincare", "haircare", "beauty",
-      "香り", "香水", "スキンケア", "ヘアケア"]),
+     ["fragrance", "skincare", "haircare", "beauty", "dryer", "shaver", "grooming",
+      "香り", "香水", "スキンケア", "ヘアケア", "ドライヤー", "シェーバー", "髭剃り"]),
     ("outer", "メンズファッション", ["#アウター", "#秋冬コーデ"],
      ["coat", "outer", "jacket", "down", "blouson", "gilet", "shearling", "tweed",
       "harrington", "trench", "chesterfield", "balmacaan", "mods", "pea-coat",
@@ -176,7 +177,7 @@ def parse_sitemap(site):
     except RuntimeError as e:
         log("sitemap index 取得失敗: %s" % e)
         return urls
-    subs = re.findall(r"<loc>([^<]*sitemap_blogs[^<]*)</loc>", idx)
+    subs = re.findall(r"<loc>([^<]*sitemap_(?:articles|blogs)[^<]*)</loc>", idx)
     for s in subs:
         try:
             xml = fetch(html.unescape(s))
@@ -185,7 +186,7 @@ def parse_sitemap(site):
             continue
         for u in re.findall(r"<loc>([^<]+)</loc>", xml):
             u = html.unescape(u).split("?")[0]
-            if "/blogs/" in u and u.count("/") >= 5:
+            if re.search(r"/blogs/[^/]+/[^/]+$", u):
                 urls.append(u)
     return sorted(set(urls))
 
@@ -365,8 +366,65 @@ def publish(cfg, text, topic):
 
 
 # ---------------------------------------------------------------- 本体
+def handle_of(url):
+    return url.rstrip("/").rsplit("/", 1)[-1]
+
+
+def parse_time(s):
+    try:
+        return datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def pick_new(entries, posted):
+    """公開から36時間以内の未投稿記事のうち最新1本"""
+    limit = datetime.now(JST) - timedelta(hours=36)
+    for e in entries:  # 新しい順
+        t = parse_time(e.get("published", ""))
+        if t and t < limit:
+            break
+        if e["handle"] not in posted:
+            return e
+    return None
+
+
+def pick_backfill(state, site, entries, posted):
+    """未投稿の過去記事を古い順に1本。直近36時間の記事は新着枠に任せる"""
+    stale = (not state.get("sitemap") or not state.get("sitemap_at") or
+             state["sitemap_at"] < (datetime.now(JST) - timedelta(days=3)).isoformat())
+    if stale:
+        urls = parse_sitemap(site)
+        if urls:
+            state["sitemap"] = urls
+            state["sitemap_at"] = datetime.now(JST).isoformat()
+            log("サイトマップ更新: %d本" % len(urls))
+    recent = set()
+    pub = {}
+    limit = datetime.now(JST) - timedelta(hours=36)
+    for e in entries:
+        t = parse_time(e.get("published", ""))
+        if t:
+            pub[e["handle"]] = e["published"]
+            if t >= limit:
+                recent.add(e["handle"])
+    pool = [u for u in state.get("sitemap", [])
+            if handle_of(u) not in posted and handle_of(u) not in recent]
+    log("未投稿の過去記事: 残り%d本" % len(pool))
+    # フィードにある記事は公開日時で、それ以外はサイトマップ順（古い→新しい）のまま
+    pool.sort(key=lambda u: pub.get(handle_of(u), ""))
+    for u in pool[:5]:
+        meta = fetch_article_meta(u)
+        if meta and meta["title"]:
+            return meta
+    return None
+
+
 def main():
     dry = "--dry-run" in sys.argv
+    mode = "new"
+    if "--mode" in sys.argv:
+        mode = sys.argv[sys.argv.index("--mode") + 1]
     cfg = load_config()
     if not cfg and not dry:
         log("Threads のトークンが未設定のため、今日はスキップ（Secrets に THREADS_USER_ID と THREADS_ACCESS_TOKEN を登録すると投稿が始まる）")
@@ -377,50 +435,40 @@ def main():
 
     state = load_json(STATE_PATH, {"posted": {}, "sitemap": [], "sitemap_at": ""})
     posted = state.setdefault("posted", {})
+    today = datetime.now(JST).strftime("%Y-%m-%d")
+    done_key = "last_%s_date" % mode
+    log("モード: %s" % mode)
 
-    # 1) 新着チェック
-    article = None
-    recycled = False
+    if state.get(done_key) == today and not dry:
+        log("今日はこのモードで投稿済みなので何もしない")
+        return 0
+
     try:
         entries = parse_feed(fetch(feed_url))
         log("フィード取得: %d本" % len(entries))
-        for e in entries:
-            if e["handle"] not in posted:
-                article = e
-                break
     except RuntimeError as e:
         log("⚠ フィード取得失敗: %s" % e)
         entries = []
 
-    # 2) 新着がなければ過去記事から
-    if article is None:
-        stale = (not state.get("sitemap") or not state.get("sitemap_at") or
-                 state["sitemap_at"] < (datetime.now(JST) - timedelta(days=7)).isoformat())
-        if stale:
-            urls = parse_sitemap(site)
-            if urls:
-                state["sitemap"] = urls
-                state["sitemap_at"] = datetime.now(JST).isoformat()
-                log("サイトマップ更新: %d本" % len(urls))
-        pool = [u for u in state.get("sitemap", [])]
-        if pool:
-            # 投稿したことがないもの優先 → 次に一番前に投稿したもの
-            pool.sort(key=lambda u: posted.get(u.rstrip("/").rsplit("/", 1)[-1], ""))
-            for u in pool[:5]:
-                meta = fetch_article_meta(u)
-                if meta and meta["title"]:
-                    article = meta
-                    recycled = True
-                    break
-    if article is None:
-        log("投稿できる記事が見つからなかった")
-        return 1
-
-    # リード文はページのメタディスクリプションを優先（記事本文より短くて正確）
-    if not recycled:
+    if mode == "new":
+        article = pick_new(entries, posted)
+        if article is None:
+            log("新着の未投稿記事なし")
+            return 0
         meta = fetch_article_meta(article["url"])
         if meta and meta.get("body"):
             article["body"] = meta["body"]
+        recycled = False
+    elif mode == "backfill":
+        article = pick_backfill(state, site, entries, posted)
+        if article is None:
+            log("過去記事はすべて投稿済み")
+            save_json(STATE_PATH, state)
+            return 0
+        recycled = True
+    else:
+        log("不明なモード: %s" % mode)
+        return 1
 
     text, topic = build_text(article, recycled)
     log("対象: %s%s" % (article["title"], "（過去記事）" if recycled else "（新着）"))
@@ -438,10 +486,11 @@ def main():
         log("✗ 投稿失敗: %s" % e)
         return 1
 
-    posted[article["handle"]] = datetime.now(JST).isoformat()
+    now = datetime.now(JST).isoformat()
+    posted[article["handle"]] = now
+    state[done_key] = today
     state["last"] = {"handle": article["handle"], "url": article["url"],
-                     "post_id": pid, "at": datetime.now(JST).isoformat(),
-                     "recycled": recycled}
+                     "post_id": pid, "at": now, "mode": mode}
     save_json(STATE_PATH, state)
     log("✓ 投稿完了 id=%s %s" % (pid, article["url"]))
     return 0
