@@ -1,0 +1,4 @@
+post.log
+config.json
+*.tmp
+__pycache__/
