@@ -64,7 +64,11 @@ def page_meta(url):
             re.search(r'<meta[^>]+content="([^"]*)"[^>]+property="%s"' % prop, h)
         return T.html.unescape(m.group(1)).strip() if m else ""
     title = meta("og:title").split("–")[0].split(" | ")[0].strip()
-    return {"title": title, "body": meta("og:description"), "image": absolutize(meta("og:image")),
+    body = meta("og:description")
+    if not body:
+        m = re.search(r'<meta[^>]+name="description"[^>]+content="([^"]*)"', h)
+        body = T.html.unescape(m.group(1)).strip() if m else ""
+    return {"title": title, "body": body, "image": absolutize(meta("og:image")),
             "url": url, "handle": T.handle_of(url)}
 
 
