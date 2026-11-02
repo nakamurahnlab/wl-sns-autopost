@@ -1,0 +1,68 @@
+name: Instagram auto post
+
+# 時刻はUTC表記（JST−9時間）。Threads と同じ時刻・同じ選び方
+on:
+  schedule:
+    - cron: "35 1 * * *"  # 10:35 JST 新着（休日・祝日の10:00公開分）
+    - cron: "35 9 * * *"  # 18:35 JST 新着（平日の18:00公開分）
+    - cron: "20 3 * * *"  # 12:20 JST 過去記事を1本
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "new=新着 / backfill=過去記事"
+        type: choice
+        options: [new, backfill]
+        default: new
+      dry_run:
+        description: "投稿せず画像と文面だけ確認する"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: threads-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install fonts and Pillow
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk > /dev/null
+          pip install -q pillow
+
+      - name: Post to Instagram
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ inputs.mode }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          MODE=new
+          if [ "$EVENT" = "workflow_dispatch" ]; then MODE="$INPUT_MODE"; fi
+          if [ "$SCHEDULE" = "20 3 * * *" ]; then MODE=backfill; fi
+          if [ "$DRY_RUN" = "true" ]; then
+            python3 post_instagram.py --mode "$MODE" --dry-run
+          else
+            python3 post_instagram.py --mode "$MODE"
+          fi
+
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in ig_state.json ig_token.enc; do if [ -f "$f" ]; then git add "$f"; fi; done
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update instagram state"
+            git pull --rebase
+            git push
+          fi
