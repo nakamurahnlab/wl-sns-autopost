@@ -8,7 +8,8 @@
     "417-edifice-punch-tee-must-buy": "2026-11-04T20:10:44.397821+09:00",
     "humidifier-5": "2026-11-05T02:29:11.012035+09:00",
     "adult-half-pants-summer": "2026-11-05T20:10:49.985993+09:00",
-    "coffee-maker-5": "2026-11-06T02:37:44.256680+09:00"
+    "coffee-maker-5": "2026-11-06T02:37:44.256680+09:00",
+    "adult-hoodie-styling": "2026-11-06T20:07:57.858862+09:00"
   },
   "sitemap": [
     "https://wardrobe-lab.jp/blogs/news/%E3%83%A9%E3%82%B0%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AA%E3%83%BC%E3%81%AF-%E5%B0%91%E3%81%97%E6%B4%BE%E6%89%8B%E3%81%AA%E3%81%8F%E3%82%89%E3%81%84%E3%81%8C%E3%81%A1%E3%82%87%E3%81%86%E3%81%A9%E3%81%84%E3%81%84-%E6%98%A5%E3%81%AB%E6%98%A0%E3%81%88%E3%82%8B%E3%83%80%E3%82%A4%E3%83%A4%E3%83%A2%E3%83%B3%E3%83%89%E3%82%A6%E3%82%A9%E3%83%83%E3%83%81%E7%89%B9%E9%9B%86-%E4%B8%AD%E7%B7%A8",
@@ -44,6 +45,7 @@
     "https://wardrobe-lab.jp/blogs/news/chester-coat-5",
     "https://wardrobe-lab.jp/blogs/news/chrome-hearts-history",
     "https://wardrobe-lab.jp/blogs/news/city-ii-single-leather-sole",
+    "https://wardrobe-lab.jp/blogs/news/coffee-maker-5",
     "https://wardrobe-lab.jp/blogs/news/color-summer-knit-mens",
     "https://wardrobe-lab.jp/blogs/news/diamond-watch-spring-style-vol1",
     "https://wardrobe-lab.jp/blogs/news/diamond-watch-spring-style-vol3",
@@ -52,6 +54,7 @@
     "https://wardrobe-lab.jp/blogs/news/domestic-brand-mens-japan-1",
     "https://wardrobe-lab.jp/blogs/news/domestic-brand-mens-japan-2",
     "https://wardrobe-lab.jp/blogs/news/doublepiping-apple-watch-band",
+    "https://wardrobe-lab.jp/blogs/news/down-jacket-5",
     "https://wardrobe-lab.jp/blogs/news/dr-martens-sandals-mens",
     "https://wardrobe-lab.jp/blogs/news/early-autumn-mens-style-august",
     "https://wardrobe-lab.jp/blogs/news/electric-shaver-5",
@@ -73,6 +76,7 @@
     "https://wardrobe-lab.jp/blogs/news/hublot-classic-fusion-chronograph-blue-victory",
     "https://wardrobe-lab.jp/blogs/news/hublot-spirit-of-big-bang-essential-taupe-42mm",
     "https://wardrobe-lab.jp/blogs/news/human-made-pokemon-2026-collection",
+    "https://wardrobe-lab.jp/blogs/news/humidifier-5",
     "https://wardrobe-lab.jp/blogs/news/indirect-lighting-4",
     "https://wardrobe-lab.jp/blogs/news/italian-brand-jacket-mens-part1",
     "https://wardrobe-lab.jp/blogs/news/italian-brand-jacket-mens-part2",
@@ -108,6 +112,7 @@
     "https://wardrobe-lab.jp/blogs/news/mens-cardigan-guide",
     "https://wardrobe-lab.jp/blogs/news/mens-cleanliness-guide",
     "https://wardrobe-lab.jp/blogs/news/mens-coordinate-colors",
+    "https://wardrobe-lab.jp/blogs/news/mens-denim-guide",
     "https://wardrobe-lab.jp/blogs/news/mens-fit-guide",
     "https://wardrobe-lab.jp/blogs/news/mens-fragrance-basics",
     "https://wardrobe-lab.jp/blogs/news/mens-fragrance-recommend",
@@ -117,7 +122,9 @@
     "https://wardrobe-lab.jp/blogs/news/mens-scarf-5",
     "https://wardrobe-lab.jp/blogs/news/mens-setup-style-vol1",
     "https://wardrobe-lab.jp/blogs/news/mens-setup-style-vol2",
+    "https://wardrobe-lab.jp/blogs/news/mens-shoes-guide",
     "https://wardrobe-lab.jp/blogs/news/mens-tshirt-choice",
+    "https://wardrobe-lab.jp/blogs/news/mens-watch-guide",
     "https://wardrobe-lab.jp/blogs/news/mm6-maison-margiela-shinsaibashi-parco-japanese-bag",
     "https://wardrobe-lab.jp/blogs/news/natsu-mens-shirt-brand",
     "https://wardrobe-lab.jp/blogs/news/never-after-dark-beams-t-goods",
@@ -135,6 +142,7 @@
     "https://wardrobe-lab.jp/blogs/news/richard-mille-watch-guide",
     "https://wardrobe-lab.jp/blogs/news/rolex-datejust-41-green-ombre",
     "https://wardrobe-lab.jp/blogs/news/rolex-submariner",
+    "https://wardrobe-lab.jp/blogs/news/roomwear-5",
     "https://wardrobe-lab.jp/blogs/news/salomon-gore-tex-xa-pro-xt-6",
     "https://wardrobe-lab.jp/blogs/news/side-gore-boots-5",
     "https://wardrobe-lab.jp/blogs/news/signet-ring-4",
@@ -174,15 +182,15 @@
     "https://wardrobe-lab.jp/blogs/news/winter-trousers-5",
     "https://wardrobe-lab.jp/blogs/news/y-3-2026aw"
   ],
-  "sitemap_at": "2026-11-02T20:25:32.965337+09:00",
+  "sitemap_at": "2026-11-06T20:07:44.321300+09:00",
   "last_new_date": "2026-11-06",
   "last": {
-    "handle": "coffee-maker-5",
-    "url": "https://wardrobe-lab.jp/blogs/news/coffee-maker-5",
-    "media_id": "18112131887334613",
-    "at": "2026-11-06T02:37:44.256680+09:00",
-    "mode": "new",
-    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261106-e7f5e28622.jpg"
+    "handle": "adult-hoodie-styling",
+    "url": "https://wardrobe-lab.jp/blogs/news/adult-hoodie-styling",
+    "media_id": "18139009837642326",
+    "at": "2026-11-06T20:07:57.858862+09:00",
+    "mode": "backfill",
+    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261106-ead1604dd4.jpg"
   },
-  "last_backfill_date": "2026-11-05"
+  "last_backfill_date": "2026-11-06"
 }
