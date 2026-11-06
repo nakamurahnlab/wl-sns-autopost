@@ -1,17 +1,16 @@
 name: Threads auto post
 
-# 時刻はUTC表記（JST−9時間）。GitHub側の混雑で数分〜数十分遅れることがある
+# 1日3本（朝・昼・夜の枠で1本ずつ）。GitHub の schedule は数時間遅れることがあるので、
+# 時刻指定はやめて毎時起動し、投稿するかどうかは post_threads.py の --mode auto が JST で判定する
 on:
   schedule:
-    - cron: "30 1 * * *"  # 10:30 JST 新着（休日・祝日の10:00公開分）
-    - cron: "30 9 * * *"  # 18:30 JST 新着（平日の18:00公開分）
-    - cron: "15 3 * * *"  # 12:15 JST 過去記事を1本
+    - cron: "7 * * * *"
   workflow_dispatch:
     inputs:
       mode:
-        description: "new=新着 / backfill=過去記事"
+        description: "auto=枠判定（定時と同じ） / new=新着 / backfill=過去記事"
         type: choice
-        options: [new, backfill]
+        options: [auto, new, backfill]
         default: new
       dry_run:
         description: "投稿せず文面だけ確認する"
@@ -22,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: threads-post
+  group: threads-auto
   cancel-in-progress: false
 
 jobs:
@@ -41,9 +40,8 @@ jobs:
           INPUT_MODE: ${{ inputs.mode }}
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
         run: |
-          MODE=new
+          MODE=auto
           if [ "$EVENT" = "workflow_dispatch" ]; then MODE="$INPUT_MODE"; fi
-          if [ "$SCHEDULE" = "15 3 * * *" ]; then MODE=backfill; fi
           if [ "$DRY_RUN" = "true" ]; then
             python3 post_threads.py --mode "$MODE" --dry-run
           else
