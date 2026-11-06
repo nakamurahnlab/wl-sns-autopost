@@ -3,7 +3,13 @@
 """
 WARDROBE LAB -> Threads 自動投稿
 
-2つのモードで動く（1日あたり各1本まで）。
+--mode auto（定時実行はこれ）: 毎時起動し、JSTの3つの枠で1本ずつ投稿する（1日3本）。
+  朝 8:00-11:59 ／ 昼 12:00-17:59 ／ 夜 20:00-23:59。それ以外の時間は何もしない。
+  各枠では新着（36時間以内・未投稿）の最新を優先し、なければ過去記事を1本。
+  前回投稿から3時間未満なら次の起動まで待つ（GitHub の遅延で起動が固まっても連投しない）。
+  GitHub の schedule は数時間遅れることがあるため、時刻指定ではなく毎時起動＋枠判定にしている。
+
+手動実行用に従来の2モードも残している（1日あたり各1本まで）。
   --mode new      新着記事（公開から36時間以内・未投稿）を1本投稿。なければ何もしない。
                   平日18:00公開／休日10:00公開に合わせ、毎日10:30と18:30に実行する。
                   その日すでに新着を投稿していたら何もしない（祝日も自動で対応できる）。
@@ -420,6 +426,17 @@ def pick_backfill(state, site, entries, posted):
     return None
 
 
+SLOTS = [("morning", 8, 12), ("noon", 12, 18), ("evening", 20, 24)]  # JST [開始時, 終了時)
+MIN_GAP_HOURS = 3
+
+
+def current_slot(now):
+    for name, start, end in SLOTS:
+        if start <= now.hour < end:
+            return name
+    return None
+
+
 def main():
     dry = "--dry-run" in sys.argv
     mode = "new"
@@ -439,7 +456,24 @@ def main():
     done_key = "last_%s_date" % mode
     log("モード: %s" % mode)
 
-    if state.get(done_key) == today and not dry:
+    slot = None
+    if mode == "auto":
+        now_jst = datetime.now(JST)
+        slot = current_slot(now_jst)
+        if slot is None:
+            log("投稿枠の外（%d時）なので何もしない" % now_jst.hour)
+            return 0
+        sd = state.get("slots", {})
+        if sd.get("date") == today and slot in sd.get("done", []) and not dry:
+            log("今日の%s枠は投稿済み" % slot)
+            return 0
+        last_at = parse_time(state.get("last", {}).get("at", ""))
+        if last_at and now_jst - last_at < timedelta(hours=MIN_GAP_HOURS) and not dry:
+            log("前回投稿から%d時間たっていないので次の起動まで待つ" % MIN_GAP_HOURS)
+            return 0
+        log("枠: %s" % slot)
+
+    if mode != "auto" and state.get(done_key) == today and not dry:
         log("今日はこのモードで投稿済みなので何もしない")
         return 0
 
@@ -450,7 +484,22 @@ def main():
         log("⚠ フィード取得失敗: %s" % e)
         entries = []
 
-    if mode == "new":
+    if mode == "auto":
+        article = pick_new(entries, posted)
+        recycled = False
+        if article is not None:
+            meta = fetch_article_meta(article["url"])
+            if meta and meta.get("body"):
+                article["body"] = meta["body"]
+        else:
+            log("新着の未投稿記事なし → 過去記事から1本")
+            article = pick_backfill(state, site, entries, posted)
+            recycled = True
+            if article is None:
+                log("投稿できる記事がない")
+                save_json(STATE_PATH, state)
+                return 0
+    elif mode == "new":
         article = pick_new(entries, posted)
         if article is None:
             log("新着の未投稿記事なし")
@@ -488,9 +537,16 @@ def main():
 
     now = datetime.now(JST).isoformat()
     posted[article["handle"]] = now
-    state[done_key] = today
+    if mode == "auto":
+        sd = state.get("slots", {})
+        if sd.get("date") != today:
+            sd = {"date": today, "done": []}
+        sd["done"].append(slot)
+        state["slots"] = sd
+    else:
+        state[done_key] = today
     state["last"] = {"handle": article["handle"], "url": article["url"],
-                     "post_id": pid, "at": now, "mode": mode}
+                     "post_id": pid, "at": now, "mode": mode if not slot else "auto:" + slot}
     save_json(STATE_PATH, state)
     log("✓ 投稿完了 id=%s %s" % (pid, article["url"]))
     return 0
