@@ -10,7 +10,8 @@
     "adult-half-pants-summer": "2026-11-05T20:10:49.985993+09:00",
     "coffee-maker-5": "2026-11-06T02:37:44.256680+09:00",
     "adult-hoodie-styling": "2026-11-06T20:07:57.858862+09:00",
-    "gift-boyfriend-30s-christmas": "2026-11-07T01:59:50.789106+09:00"
+    "gift-boyfriend-30s-christmas": "2026-11-07T01:59:50.789106+09:00",
+    "adult-loungewear": "2026-11-07T19:26:55.062445+09:00"
   },
   "sitemap": [
     "https://wardrobe-lab.jp/blogs/news/%E3%83%A9%E3%82%B0%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AA%E3%83%BC%E3%81%AF-%E5%B0%91%E3%81%97%E6%B4%BE%E6%89%8B%E3%81%AA%E3%81%8F%E3%82%89%E3%81%84%E3%81%8C%E3%81%A1%E3%82%87%E3%81%86%E3%81%A9%E3%81%84%E3%81%84-%E6%98%A5%E3%81%AB%E6%98%A0%E3%81%88%E3%82%8B%E3%83%80%E3%82%A4%E3%83%A4%E3%83%A2%E3%83%B3%E3%83%89%E3%82%A6%E3%82%A9%E3%83%83%E3%83%81%E7%89%B9%E9%9B%86-%E4%B8%AD%E7%B7%A8",
@@ -186,12 +187,12 @@
   "sitemap_at": "2026-11-06T20:07:44.321300+09:00",
   "last_new_date": "2026-11-07",
   "last": {
-    "handle": "gift-boyfriend-30s-christmas",
-    "url": "https://wardrobe-lab.jp/blogs/news/gift-boyfriend-30s-christmas",
-    "media_id": "17894136864685506",
-    "at": "2026-11-07T01:59:50.789106+09:00",
-    "mode": "new",
-    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261107-6c283b453d.jpg"
+    "handle": "adult-loungewear",
+    "url": "https://wardrobe-lab.jp/blogs/news/adult-loungewear",
+    "media_id": "18027326516926371",
+    "at": "2026-11-07T19:26:55.062445+09:00",
+    "mode": "backfill",
+    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261107-8f88a4f47e.jpg"
   },
-  "last_backfill_date": "2026-11-06"
+  "last_backfill_date": "2026-11-07"
 }
