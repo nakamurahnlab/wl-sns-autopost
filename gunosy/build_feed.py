@@ -277,7 +277,23 @@ def convert_body(raw_html):
                 el.clear()
                 el.append(NavigableString("".join(kept).strip().lstrip("※")))
         cleaned.append(el)
-    return cleaned
+    # ul/ol は <p> に展開する（Gunosyのバリデータは <li> 内の文も「<p>で囲まれていない」と注意を出す）
+    final = []
+    for el in cleaned:
+        if el.name in ("ul", "ol"):
+            for n, li in enumerate(el.find_all("li", recursive=False), start=1):
+                p = BeautifulSoup("<p></p>", "html.parser").p
+                if not li.find(["strong", "b"]):
+                    p.append(NavigableString(f"{n}. " if el.name == "ol" else "・"))
+                for c in list(li.contents):
+                    if isinstance(c, NavigableString):
+                        c = NavigableString(str(c).strip())
+                    p.append(c)
+                if p.get_text(strip=True):
+                    final.append(p)
+        else:
+            final.append(el)
+    return final
 
 
 def rfc822(iso):
