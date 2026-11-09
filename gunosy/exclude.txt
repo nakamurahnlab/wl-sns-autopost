@@ -6,3 +6,7 @@ doublepiping*
 tmmy*
 darendas*
 flr
+# 記事まとめ（ハブ）ページ。リンク集なので配信しても中身がない
+mens-shoes-guide
+mens-denim-guide
+mens-watch-guide
