@@ -35,6 +35,9 @@ jobs:
         run: |
           pip install --quiet beautifulsoup4==4.12.3
           python3 gunosy/build_feed.py
+          # GitHub Pages の Content-Type を拡張子ごとに確かめるため、同じ内容を .rss / .atom でも置く
+          cp site/gunosy.xml site/gunosy.rss
+          cp site/gunosy.xml site/gunosy.atom
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
