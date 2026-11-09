@@ -1,0 +1,50 @@
+name: Gunosy feed
+
+# wardrobe-lab.jp の記事を GunosyFeed 形式の RSS に変換して GitHub Pages で公開する
+# 公開URL: https://nakamurahnlab.github.io/wl-sns-autopost/gunosy.xml
+# 毎時更新（Gunosy は pubDate が10日以内の記事だけ取り込むので、最新30件で足りる）
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "gunosy/**"
+      - ".github/workflows/gunosy-feed.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: gunosy-feed
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build feed
+        run: |
+          pip install --quiet beautifulsoup4==4.12.3
+          python3 gunosy/build_feed.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
