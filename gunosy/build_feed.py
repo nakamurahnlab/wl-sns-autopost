@@ -296,6 +296,40 @@ def convert_body(raw_html):
     return final
 
 
+STOP = set("5選 大人 選ぶ 選び方 おすすめ ブランド メンズ 男性 プレゼント ギフト".split())
+
+
+def _grams(title, kicker=""):
+    t = re.sub(r"[｜|、。・：:「」（）()\s0-9０-９]", " ", title)
+    for w in STOP:
+        t = t.replace(w, " ")
+    out = set()
+    for chunk in t.split():
+        for i in range(len(chunk) - 1):
+            g = chunk[i:i + 2]
+            if re.search(r"[\u30a0-\u30ff\u4e00-\u9fffA-Za-z]", g) and not re.fullmatch(r"[\u3040-\u309f]+", g):
+                out.add(g)
+    for w in re.findall(r"[A-Za-z]{4,}", kicker):
+        w = w.upper().rstrip("S")
+        if w not in ("FOR", "GIFT", "MEN"):
+            out.add("#" + w)
+    return out
+
+
+def pick_related(x, pool, n=3):
+    """タイトルの重なりで関連記事を選ぶ（ガイドライン2.3.1①：リンク先は内容と関連があること）"""
+    g = _grams(x["title"], x.get("kicker", ""))
+    scored = []
+    for y in pool:
+        if y is x:
+            continue
+        sc = len(g & _grams(y["title"], y.get("kicker", "")))
+        if sc >= 2:
+            scored.append((sc, y))
+    scored.sort(key=lambda t: -t[0])
+    return [y for _, y in scored[:n]]
+
+
 def rfc822(iso):
     dt = datetime.fromisoformat(iso)
     return format_datetime(dt.astimezone(JST))
@@ -332,6 +366,8 @@ def main():
             "updated": e.findtext("a:updated", namespaces=ATOM_NS),
             "content": content,
             "excluded": is_excluded(handle, soup, excludes),
+            "kicker": (soup.select_one(".wl-article-kicker").get_text(" ", strip=True)
+                       if soup.select_one(".wl-article-kicker") else ""),
             "first_img": next((strip_query(i.get("src")) for i in soup.find_all("img")
                                if (i.get("src") or "").startswith(("https://", "//"))
                                and "rakuten" not in i.get("src") and "amazon" not in i.get("src")), None),
@@ -343,7 +379,7 @@ def main():
     items_xml = []
     for i, x in enumerate(ok):
         body = convert_body(x["content"])
-        related = [y for y in ok if y is not x][:3]
+        related = pick_related(x, ok)
         # 本文内リンクは「1段落目と2段落目の間に1本だけ」（ガイドライン2.3.1⑤）
         if related:
             r = related[0]
