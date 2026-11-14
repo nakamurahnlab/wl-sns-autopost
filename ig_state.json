@@ -23,7 +23,8 @@
     "anatomica-618-original-indigo-denim": "2026-11-12T20:29:24.054394+09:00",
     "notebook-cover-5": "2026-11-13T02:44:11.361881+09:00",
     "anime-collaboration-tshirt-mens": "2026-11-13T20:14:13.335278+09:00",
-    "room-shoes-5": "2026-11-14T02:22:24.969209+09:00"
+    "room-shoes-5": "2026-11-14T02:22:24.969209+09:00",
+    "anime-watch-brand-5": "2026-11-14T19:39:46.694011+09:00"
   },
   "sitemap": [
     "https://wardrobe-lab.jp/blogs/news/%E3%83%A9%E3%82%B0%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AA%E3%83%BC%E3%81%AF-%E5%B0%91%E3%81%97%E6%B4%BE%E6%89%8B%E3%81%AA%E3%81%8F%E3%82%89%E3%81%84%E3%81%8C%E3%81%A1%E3%82%87%E3%81%86%E3%81%A9%E3%81%84%E3%81%84-%E6%98%A5%E3%81%AB%E6%98%A0%E3%81%88%E3%82%8B%E3%83%80%E3%82%A4%E3%83%A4%E3%83%A2%E3%83%B3%E3%83%89%E3%82%A6%E3%82%A9%E3%83%83%E3%83%81%E7%89%B9%E9%9B%86-%E4%B8%AD%E7%B7%A8",
@@ -224,12 +225,12 @@
   "sitemap_at": "2026-11-13T20:13:51.455339+09:00",
   "last_new_date": "2026-11-14",
   "last": {
-    "handle": "room-shoes-5",
-    "url": "https://wardrobe-lab.jp/blogs/news/room-shoes-5",
-    "media_id": "17900304768655166",
-    "at": "2026-11-14T02:22:24.969209+09:00",
-    "mode": "new",
-    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261114-c1be6803ea.jpg"
+    "handle": "anime-watch-brand-5",
+    "url": "https://wardrobe-lab.jp/blogs/news/anime-watch-brand-5",
+    "media_id": "18505612141096949",
+    "at": "2026-11-14T19:39:46.694011+09:00",
+    "mode": "backfill",
+    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261114-a319180f58.jpg"
   },
-  "last_backfill_date": "2026-11-13"
+  "last_backfill_date": "2026-11-14"
 }
