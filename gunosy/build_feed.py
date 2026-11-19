@@ -62,6 +62,34 @@ def fetch(url):
         return r.read().decode("utf-8")
 
 
+OG_IMAGE_RE = re.compile(
+    r'<meta[^>]+property=["\']og:image(?::secure_url)?["\'][^>]+content=["\']([^"\']+)["\']', re.I)
+
+
+def og_image(link):
+    """記事ページの og:image（＝Shopifyの記事アイキャッチ）を取る。取れなければ None。"""
+    try:
+        page = fetch(link)
+    except Exception as e:  # noqa: BLE001
+        print(f"og:image fetch failed: {link}: {e}", file=sys.stderr)
+        return None
+    m = OG_IMAGE_RE.search(page)
+    if not m:
+        return None
+    url = html.unescape(m.group(1)).strip()
+    if url.startswith("//"):
+        url = "https:" + url
+    elif url.startswith("http://"):
+        url = "https://" + url[len("http://"):]
+    if not url.startswith("https://"):
+        return None
+    url = strip_query(url)
+    # サイト共通のOGP画像（記事の代表画像が空のとき）は使わない
+    if "ogpdefault" in url or "/files/" in url and "logo" in url.lower():
+        return None
+    return url
+
+
 def load_excludes():
     path = os.path.join(HERE, "exclude.txt")
     out = []
@@ -401,8 +429,17 @@ def main():
             f"<dc:creator>{CREATOR}</dc:creator>",
             '<media:status state="active" />',
         ]
-        if x["first_img"]:
-            img = x["first_img"]
+        img = og_image(x["link"]) or x["first_img"]
+        if img:
+            # 本文の先頭にアイキャッチを入れる（グノシーの記事ページ・サムネイル用）
+            if img.startswith("//"):
+                img = "https:" + img
+            hero = BeautifulSoup(f'<figure><img src="{html.escape(img)}" alt="{html.escape(x["title"], quote=True)}"/></figure>',
+                                 "html.parser").figure
+            if not any(el.name == "figure" and el.find("img", src=img) for el in body[:2]):
+                body.insert(0, hero)
+            body_html = "\n".join(str(el) for el in body).replace("]]>", "]]&gt;")
+        if img:
             if img.startswith("//"):
                 img = "https:" + img
             if len(img) < 256:
