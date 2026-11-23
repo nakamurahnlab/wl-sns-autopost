@@ -42,7 +42,8 @@
     "suede-jacket-5": "2026-11-22T01:56:39.112985+09:00",
     "beosound2": "2026-11-22T20:39:48.947483+09:00",
     "wool-blouson-5": "2026-11-23T02:21:56.619828+09:00",
-    "aoyama-hilton-zegna-electa-suit": "2026-11-23T22:11:27.020566+09:00"
+    "aoyama-hilton-zegna-electa-suit": "2026-11-23T22:11:27.020566+09:00",
+    "winter-setup-5": "2026-11-24T06:39:08.956136+09:00"
   },
   "sitemap": [
     "https://wardrobe-lab.jp/blogs/news/%E3%83%A9%E3%82%B0%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AA%E3%83%BC%E3%81%AF-%E5%B0%91%E3%81%97%E6%B4%BE%E6%89%8B%E3%81%AA%E3%81%8F%E3%82%89%E3%81%84%E3%81%8C%E3%81%A1%E3%82%87%E3%81%86%E3%81%A9%E3%81%84%E3%81%84-%E6%98%A5%E3%81%AB%E6%98%A0%E3%81%88%E3%82%8B%E3%83%80%E3%82%A4%E3%83%A4%E3%83%A2%E3%83%B3%E3%83%89%E3%82%A6%E3%82%A9%E3%83%83%E3%83%81%E7%89%B9%E9%9B%86-%E4%B8%AD%E7%B7%A8",
@@ -302,14 +303,14 @@
     "https://wardrobe-lab.jp/blogs/news/y-3-2026aw"
   ],
   "sitemap_at": "2026-11-23T22:11:09.530460+09:00",
-  "last_new_date": "2026-11-23",
+  "last_new_date": "2026-11-24",
   "last": {
-    "handle": "aoyama-hilton-zegna-electa-suit",
-    "url": "https://wardrobe-lab.jp/blogs/news/aoyama-hilton-zegna-electa-suit",
-    "media_id": "18134825488701638",
-    "at": "2026-11-23T22:11:27.020566+09:00",
-    "mode": "backfill",
-    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261123-d7b8cf2ca9.jpg"
+    "handle": "winter-setup-5",
+    "url": "https://wardrobe-lab.jp/blogs/news/winter-setup-5",
+    "media_id": "17961112863292088",
+    "at": "2026-11-24T06:39:08.956136+09:00",
+    "mode": "new",
+    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261124-2b0db33262.jpg"
   },
   "last_backfill_date": "2026-11-23"
 }
