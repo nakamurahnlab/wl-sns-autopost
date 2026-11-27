@@ -10,3 +10,7 @@ flr
 mens-shoes-guide
 mens-denim-guide
 mens-watch-guide
+mens-outer-guide
+mens-knit-guide
+mens-leather-goods-guide
+black-friday-2026-guide
