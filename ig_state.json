@@ -51,7 +51,8 @@
     "berwich-ardbeg": "2026-11-26T21:51:27.787202+09:00",
     "rugby-shirt-5": "2026-11-27T04:16:37.610414+09:00",
     "waterproof-sneakers-5": "2026-11-28T04:09:56.259864+09:00",
-    "attachment-vein-hankyu-umeda-popup-2026": "2026-11-28T20:59:07.088745+09:00"
+    "attachment-vein-hankyu-umeda-popup-2026": "2026-11-28T20:59:07.088745+09:00",
+    "clutch-bag-5": "2026-11-29T02:47:27.476217+09:00"
   },
   "sitemap": [
     "https://wardrobe-lab.jp/blogs/news/%E3%83%A9%E3%82%B0%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AA%E3%83%BC%E3%81%AF-%E5%B0%91%E3%81%97%E6%B4%BE%E6%89%8B%E3%81%AA%E3%81%8F%E3%82%89%E3%81%84%E3%81%8C%E3%81%A1%E3%82%87%E3%81%86%E3%81%A9%E3%81%84%E3%81%84-%E6%98%A5%E3%81%AB%E6%98%A0%E3%81%88%E3%82%8B%E3%83%80%E3%82%A4%E3%83%A4%E3%83%A2%E3%83%B3%E3%83%89%E3%82%A6%E3%82%A9%E3%83%83%E3%83%81%E7%89%B9%E9%9B%86-%E4%B8%AD%E7%B7%A8",
@@ -356,14 +357,14 @@
     "https://wardrobe-lab.jp/blogs/news/y-3-2026aw"
   ],
   "sitemap_at": "2026-11-28T20:58:51.799685+09:00",
-  "last_new_date": "2026-11-28",
+  "last_new_date": "2026-11-29",
   "last": {
-    "handle": "attachment-vein-hankyu-umeda-popup-2026",
-    "url": "https://wardrobe-lab.jp/blogs/news/attachment-vein-hankyu-umeda-popup-2026",
-    "media_id": "18121018058082600",
-    "at": "2026-11-28T20:59:07.088745+09:00",
-    "mode": "backfill",
-    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261128-17da11c7c9.jpg"
+    "handle": "clutch-bag-5",
+    "url": "https://wardrobe-lab.jp/blogs/news/clutch-bag-5",
+    "media_id": "18355047067282508",
+    "at": "2026-11-29T02:47:27.476217+09:00",
+    "mode": "new",
+    "image": "https://raw.githubusercontent.com/nakamurahnlab/wl-sns-autopost/main/images/20261129-a691a68f1d.jpg"
   },
   "last_backfill_date": "2026-11-28"
 }
